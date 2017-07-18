@@ -1,0 +1,50 @@
+{
+  "name": "es7frame-example",
+  "version": "0.1.0",
+  "description": "es7frame example",
+  "main": "run.js",
+  "dependencies": {
+    "bcrypt": "^1.0.2",
+    "es7frame": "0.2.3",
+    "xregexp": "^3.2.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.0",
+    "eslint": "^4.2.0",
+    "eslint-config-airbnb-base": "^11.2.0",
+    "eslint-plugin-import": "^2.7.0",
+    "istanbul": "^0.4.5",
+    "jsinspect": "^0.12.6",
+    "mocha": "^3.4.2",
+    "mochawesome": "^2.3.0"
+  },
+  "scripts": {
+    "start": "node .",
+    "test": "node_modules/.bin/mocha",
+    "lint": "node_modules/.bin/eslint services run.js run-multi.js && node_modules/.bin/jsinspect services run.js run-multi.js"
+  },
+  "keywords": [
+    "es7frame",
+    "example",
+    "poc",
+    "microservice",
+    "rest",
+    "api",
+    "web",
+    "http",
+    "https",
+    "tls",
+    "async",
+    "await"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tarquas/es7frame-example.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tarquas/es7frame-example/issues"
+  },
+  "homepage": "https://github.com/tarquas/es7frame-example#readme",
+  "author": "Taras Mykhailovych",
+  "license": "MIT"
+}

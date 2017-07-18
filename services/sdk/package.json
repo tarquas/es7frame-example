@@ -1,0 +1,40 @@
+{
+  "name": "es7frame-example-sdk",
+  "version": "0.1.0",
+  "description": "Example of REST API Microservices built upon es7frame. SDK module.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node_modules/.bin/mocha",
+    "lint": "node_modules/.bin/eslint auth run-multi.js && node_modules/.bin/jsinspect auth run-multi.js"
+  },
+  "keywords": [
+    "es7frame",
+    "example",
+    "poc",
+    "microservice",
+    "rest",
+    "api",
+    "web",
+    "http",
+    "https",
+    "tls",
+    "async",
+    "await",
+    "sdk"
+  ],
+  "author": "Taras Mykhailovych",
+  "license": "MIT",
+  "dependencies": {
+    "es7frame": "0.2.3"
+  },
+  "devDependencies": {
+    "chai": "^4.1.0",
+    "eslint": "^4.2.0",
+    "eslint-config-airbnb-base": "^11.2.0",
+    "eslint-plugin-import": "^2.7.0",
+    "istanbul": "^0.4.5",
+    "jsinspect": "^0.12.6",
+    "mocha": "^3.4.2",
+    "mochawesome": "^2.3.0"
+  }
+}
