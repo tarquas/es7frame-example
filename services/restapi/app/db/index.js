@@ -10,9 +10,8 @@ Object.assign(Db.desc, {
   type: 'db',
 
   members: {
+    goods: require('./goods'),
     keywords: require('../../../sdk/keywords/db'),
-    profiles: require('./users-profiles'),
-    users: require('./users'),
     validators: require('../../../sdk/validators/db')
   },
 

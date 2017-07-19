@@ -1,12 +1,6 @@
 const Union = require('es7frame/union');
 
-class Web extends Union(require('es7frame/web-api')) {
-  get errors() { return Web.errors; }
-}
-
-Object.assign(Web.errors, {
-  badToken: '401 Provided token is not valid (must be 24 characters)'
-});
+class Web extends Union(require('../../../sdk/web-api')) {}
 
 module.exports = Web;
 
@@ -17,10 +11,13 @@ Object.assign(Web.desc, {
 
   members: {
     auth: require('../../../sdk/auth/web'),
+    goods: require('./goods'),
     upload: require('es7frame/web-api-upload')
   },
 
   deps: {
+    db: require('../db'),
+    mq: require('../mq')
   },
 
   defaultInit: {

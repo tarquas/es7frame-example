@@ -12,11 +12,13 @@ class Users extends Model {
       passwordHash: String,
       rev: Number,
       name: String,
+      nameLower: String,
       keywords: [String]
     }, {
       collection: 'users'
     })
-      .index({emailLower: 1}, {unique: true});
+      .index({emailLower: 1}, {unique: true})
+      .index({keywords: 1});
   }
 }
 

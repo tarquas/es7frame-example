@@ -1,6 +1,5 @@
 const Crypt = require('es7frame/crypt');
 const AutoInit = require('es7frame/auto-init');
-const XRegExp = require('xregexp');
 const bcrypt = require('bcrypt');
 const util = require('util');
 
@@ -20,12 +19,12 @@ class Profiles extends AutoInit {
     email, // String!
     password // String!
   }) {
-    Profiles.validateEmail(email);
-    Profiles.validatePassword(password);
-    Profiles.validateName(name);
+    await this.db.validators.validateEmail(email);
+    await this.db.validators.validatePassword(password);
+    await this.db.validators.validateName(name);
 
-    const passwordHash = await Profiles.getPasswordHash(password);
-    const keywords = name.match(Profiles.rxNameKeywors);
+    const passwordHash = await this.getPasswordHash(password);
+    const keywords = await this.db.keywords.getKeywords({name, email});
 
     const user = new this.model({
       _id: this.db.users.newShortId(),
@@ -35,6 +34,7 @@ class Profiles extends AutoInit {
       passwordHash,
       rev: 0,
       name,
+      nameLower: name.toLowerCase(),
       keywords
     });
 
@@ -54,17 +54,17 @@ class Profiles extends AutoInit {
     email, // String!
     password // String!
   }) {
-    Profiles.validateEmail(email);
-    Profiles.validatePassword(password);
+    await this.db.validators.validateEmail(email);
+    await this.db.validators.validatePassword(password);
 
     const user = await this.model.findOne(
-      {emailLower: email.toLower()},
+      {emailLower: email.toLowerCase()},
       {passwordHash: 1, rev: 1}
     );
 
     if (!user) throw 'badAuth';
 
-    const passwordMatch = await Profiles.checkPasswordHash(password, user.passwordHash);
+    const passwordMatch = await this.checkPasswordHash(password, user.passwordHash);
     if (!passwordMatch) throw 'badAuth';
 
     return this.getToken({userId: user._id, rev: user.rev});
@@ -96,17 +96,25 @@ class Profiles extends AutoInit {
   async authenticate({
     token // String! auth token
   }) {
-    Profiles.validateToken(token);
+    await this.db.validators.validateToken(token);
 
     const crypt = new Crypt(secret);
-    const tokenData = crypt.checkToken(token);
 
-    Profiles.validateTokenData(token);
+    let tokenData;
 
-    const user = this.model.findOne({_id: tokenData.userId}, {rev: 1});
+    try {
+      tokenData = crypt.checkToken(token);
+    } catch (err) {
+      throw 'badToken';
+    }
+
+    await this.validateTokenData(token);
+
+    const user = await this.model.findOne({_id: tokenData.userId}, {_id: 0, rev: 1});
     if (!user) throw 'badToken';
 
     const rev = user.rev & Profiles.maskRev; // eslint-disable-line
+
     if (rev !== tokenData.rev) throw 'badToken';
 
     return {
@@ -118,7 +126,7 @@ class Profiles extends AutoInit {
   async getOne({
     userId
   }) {
-    Profiles.validateUserId(userId);
+    await this.db.validators.validateId(userId);
 
     const user = await this.model.findOne(
       {_id: userId},
@@ -134,30 +142,32 @@ class Profiles extends AutoInit {
     email, // String?
     password // String?
   }) {
-    Profiles.validateUserId(userId);
+    await this.db.validators.validateId(userId);
 
     const now = new Date();
     const mod = {};
     const $set = {};
     const $inc = {};
+    const keywords = [];
 
     if (email) {
-      Profiles.validateEmail(email);
+      await this.db.validators.validateEmail(email);
       Object.assign($set, {email});
+      keywords.push(...await this.db.keywords.getKeywords({email}));
       $inc.rev = 1;
     }
 
     if (password) {
-      Profiles.validatePassword(password);
-      const passwordHash = await Profiles.getPasswordHash(password);
+      await this.db.validators.validatePassword(password);
+      const passwordHash = await this.getPasswordHash(password);
       Object.assign($set, {passwordHash, passwordUpdatedAt: now});
       $inc.rev = 1;
     }
 
     if (name) {
-      Profiles.validateName(name);
-      const keywords = name.match(Profiles.rxNameKeywors);
-      Object.assign($set, {name, keywords});
+      await this.db.validators.validateName(name);
+      keywords.push(...await this.db.keywords.getKeywords({name}));
+      Object.assign($set, {name, nameLower: name.toLowerCase()});
     }
 
     for (const key in $set) { // eslint-disable-line
@@ -172,6 +182,8 @@ class Profiles extends AutoInit {
     }
 
     for (const key in mod) { // eslint-disable-line
+      if (keywords.length) mod.$addToSet = {keywords: {$each: keywords}};
+
       const user = await this.model.findOneAndUpdate( // eslint-disable-line
         {_id: userId},
         mod,
@@ -180,22 +192,19 @@ class Profiles extends AutoInit {
 
       if (!user) throw 'notFound';
 
-      if ($inc.rev) await this.mq.pub('auth_userTokensExpired', {userId}); // eslint-disable-line
-      return this.getToken({userId: user._id, rev: user.rev});
+      if ($inc.rev) {
+        await this.mq.pub('auth_userTokensExpired', {userId}); // eslint-disable-line
+        const tokenReply = this.getToken({userId: user._id, rev: user.rev});
+        Object.assign(tokenReply, {status: 'modified'});
+      }
+
+      return {status: 'modified'};
     }
 
     return {status: 'notModified'};
   }
 
-  static validateUserId(userId) {
-    if (!userId || !Profiles.rxValidUserId.test(userId)) throw 'badUserId';
-  }
-
-  static validateToken(token) {
-    if (!token || !Profiles.rxValidToken.test(token)) throw 'badToken';
-  }
-
-  static validateTokenData(tokenData) {
+  async validateTokenData(tokenData) {
     if (!tokenData) throw 'badToken';
 
     const now = +new Date();
@@ -206,44 +215,20 @@ class Profiles extends AutoInit {
     if (createdAt > now) throw 'badToken';
   }
 
-  static validateName(name) {
-    if (!name || !(name.length < 64)) throw 'badName';
-  }
-
-  static validateEmail(email) {
-    if (!email || !(email.length < 64) || !Profiles.rxValidEmail.test(email)) throw 'badEmail';
-  }
-
-  static validatePassword(password) {
-    if (!password || !(password.length < 64) || password.length < 6) throw 'badPassword';
-  }
-
-  static async getPasswordHash(password) {
+  async getPasswordHash(password) {
     const salt = await util.promisify(bcrypt.genSalt)(Profiles.passwordSaltWorkFactor);
     const hash = await util.promisify(bcrypt.hash)(password, salt);
     return hash;
   }
 
-  static async checkPasswordHash(password, hash) {
+  async checkPasswordHash(password, hash) {
     const match = await util.promisify(bcrypt.compare)(password, hash);
     return match;
   }
 }
 
-Profiles.rxValidEmail = new RegExp(
-  '^(([^<>()[\\]\\\\.,;:\\s@"]+(\\.[^<>()[\\]\\\\.,;:\\s@"]+)*)' +
-  '|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.' +
-  '[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$'
-);
-
 Profiles.maskRev = 0xFFFFFF;
 Profiles.passwordSaltWorkFactor = 10;
-
-Profiles.rxNameKeywors = new XRegExp('\\pL\'\\d\\-_\\.+', 'g');
-
-Profiles.rxValidToken = /^[\w-]{32}$/;
 Profiles.tokenExpirationMsec = 31 * 24 * 60 * 60 * 1000;
-
-Profiles.rxValidUserId = /^[\w-]{16}$/;
 
 module.exports = Profiles;

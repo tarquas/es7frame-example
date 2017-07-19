@@ -45,6 +45,6 @@ class Auth extends Rest {
   }
 }
 
-Auth.rxHeaderToken = /^token ([\w-]{32})/i;
+Auth.rxHeaderToken = /^token ([\w-]{32})(\s|$)/i;
 
 module.exports = Auth;
