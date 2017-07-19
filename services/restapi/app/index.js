@@ -12,11 +12,11 @@ class Me extends Cluster {
   }
 
   async main() {
-    console.log(`RestApi microservice ${this.workerId} is running on HTTP ${web.httpBind} HTTPS ${web.httpsBind} ${web.prefix}`);
+    console.log(`RestApi microservice #${process.env.NODE_CLUSTER_ID} is running on HTTP ${web.httpBind} HTTPS ${web.httpsBind} ${web.prefix}`);
   }
 
   async finish() {
-    console.log(`RestApi microservice ${this.workerId} is shutting down`);
+    console.log(`RestApi microservice #${process.env.NODE_CLUSTER_ID} is shutting down`);
     await super.finish();
   }
 }
