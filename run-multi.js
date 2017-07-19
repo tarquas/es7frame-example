@@ -2,7 +2,7 @@ process.env.NODE_ENV = 'dev-multi';
 
 const Cluster = require('es7frame/cluster');
 
-if (!Cluster) return;
+if (Cluster.isMaster) return;
 
 const Union = require('es7frame/union');
 

@@ -1,11 +1,11 @@
 {
   "name": "es7frame-example-auth",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "es7frame example of auth microservice",
   "main": "app/index.js",
   "dependencies": {
     "bcrypt": "^1.0.2",
-    "es7frame": "0.2.3",
+    "es7frame": "0.3.0",
     "xregexp": "^3.2.0"
   },
   "devDependencies": {

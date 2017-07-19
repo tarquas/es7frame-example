@@ -1,6 +1,6 @@
 const Cluster = require('es7frame/cluster');
 
-if (!Cluster) return;
+if (Cluster.isMaster) return;
 
 const web = require('./web').defaultInstance;
 

@@ -1,1 +1,1 @@
-auth: node run-multi
+web: node run-multi
