@@ -4,8 +4,8 @@ if (!cfg.AUTH_TOKEN_SECRET) throw new Error('Production requires explicit TOKEN_
 
 if (!cfg.MQ_PREFIX) cfg.MQ_PREFIX = `${cfg.NODE_APP_PRODUCT}_`;
 if (!cfg.AUTH_DB_PREFIX) cfg.DB_PREFIX = `${cfg.NODE_APP_PRODUCT}_${cfg.NODE_APP_SERVICE}_`;
-if (!cfg.AUTH_WEB_BASE_PREFIX) cfg.AUTH_WEB_BASE_PREFIX = '';
-if (!cfg.AUTH_WEB_PREFIX) cfg.AUTH_WEB_PREFIX = `${cfg.AUTH_WEB_BASE_PREFIX}/${cfg.NODE_APP_SERVICE}`;
+if (!cfg.WEB_BASE_PREFIX) cfg.WEB_BASE_PREFIX = '';
+if (!cfg.AUTH_WEB_PREFIX) cfg.AUTH_WEB_PREFIX = `${cfg.WEB_BASE_PREFIX}/${cfg.NODE_APP_SERVICE}`;
 
 // generic
 

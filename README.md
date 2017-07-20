@@ -6,10 +6,10 @@ Example of easy configurable REST API Microservices built upon `es7frame`.
 
 Following microservices are represented by this example:
 
-| NODE_SERVICE_ID | NODE_SERVICE_NAME | Directory            |
-|---              |---                |---                   |
-|               1 | auth              | `./services/auth`    |
-|               2 | restapi           | `./services/restapi` |
+| NODE_APP_SERVICE_ID | NODE_APP_SERVICE  | Directory            |
+|---                  |---                |---                   |
+|                   1 | auth              | `./services/auth`    |
+|                   2 | restapi           | `./services/restapi` |
 
 On backend microservices are accessible via common SDK (`./services/sdk`)
 
@@ -17,7 +17,7 @@ On backend microservices are accessible via common SDK (`./services/sdk`)
 
 Following services need to be installed on the same host with this example:
 
-* `MongoDB` (recommended version is >= 3.4.6; maintains databases with name of format `dev_es7frame_example_${NODE_SERVICE_NAME}`);
+* `MongoDB` (recommended version is >= 3.4.6; maintains databases with name of format `dev_es7frame_example_${NODE_APP_SERVICE}`);
 
 * `RabbitMQ` (recommended version is >= 3.6.10; maintains queues and exchanges with name of format `dev_es7frame_example_${queue_name}` upon `/` virtual host).
 
@@ -26,7 +26,7 @@ Default out-of-box configurations of these services are sufficient to run this e
 ## Install
 
 It's sufficient to install common to all microservices NPM dependencies from root directory of this example.
-Installation of individual NPM dependencies under (`./services/${NODE_SERVICE_NAME}`) is not required.
+Installation of individual NPM dependencies under (`./services/${NODE_APP_SERVICE}`) is not required.
 
 ```
 npm i
@@ -48,7 +48,7 @@ NPM start script (`npm start`) may be used instead of `node .` for these example
 node .
 ```
 
-HTTP web services are bound to ports `3000 + NODE_SERVICE_ID`.
+HTTP web services are bound to ports `3000 + NODE_APP_SERVICE_ID`.
 Profile API of `auth` is accessible on `http://127.0.0.1:3001/profile`.
 
 ### Single instance of every service; HTTP is bound to same port
@@ -57,7 +57,7 @@ Profile API of `auth` is accessible on `http://127.0.0.1:3001/profile`.
 node run-multi
 ```
 
-HTTP web services are bound to port `3000` under different prefix paths `/${NODE_SERVICE_NAME}`.
+HTTP web services are bound to port `3000` under different prefix paths `/${NODE_APP_SERVICE}`.
 
 This startup mode is useful when all microservices are hosted on same VM, but platform allows only one HTTP port for that VM.
 
@@ -95,7 +95,7 @@ NODE_CLUSTER_SIZE=2 node services/restapi
 ### Single instance of every service. HTTP is bound to non-default ports
 
 ```
-WEB_BASE_PORT=4000 node .
+WEB_BASE_HTTP=4000 node .
 ```
 
 `auth` HTTP is bound to 4001, `restapi` to 4002.
@@ -103,13 +103,13 @@ WEB_BASE_PORT=4000 node .
 ### Single instance of every service. HTTP is bound to same non-default port
 
 ```
-WEB_HTTP=4000 node run-multi
+WEB_BASE_HTTP=4000 node run-multi
 ```
 
 ### Single instance of every service. HTTP is bound to different ports with custom path prefix
 
 ```
-WEB_PREFIX=/api node .
+WEB_BASE_PREFIX=/api node .
 ```
 
 Profile API of `auth` is accessible on `http://127.0.0.1:3001/api/profile`.
@@ -117,7 +117,7 @@ Profile API of `auth` is accessible on `http://127.0.0.1:3001/api/profile`.
 ### Single instance of every service. HTTP is bound to same port
 
 ```
-WEB_HTTP=5000 WEB_BASE_PREFIX=/api node run-multi
+WEB_BASE_HTTP=5000 WEB_BASE_PREFIX=/api node run-multi
 ```
 
 Profile API of `auth` is accessible on `http://127.0.0.1:5000/api/auth/profile`.
@@ -132,7 +132,7 @@ Restart of a worker will occur in 5 seconds after its critical failure.
 
 ## Deployment
 
-Create or customize existing (`prod`) configurations of microservices (in `./services/${NODE_SERVICE_NAME}/config` directory) for your production.
+Create or customize existing (`prod`) configurations of microservices (in `./services/${NODE_APP_SERVICE}/config` directory) for your production.
 Example `NODE_ENV=prod` configuration is given for deployment on Heroku platform with CloudAMQP and mLab add-ons.
 
 *Heroku > Settings > Config Variables*
@@ -148,6 +148,6 @@ Example `NODE_ENV=prod` configuration is given for deployment on Heroku platform
 ### Horizontal scaling of placing microservices in different VMs.
 
 Each microservice may be source-controlled in different repo and hosted on different VM.
-For each microservice you'll need only `${NODE_SERVICE_NAME}` and `sdk` directories (originated in `./services`) placed under the same root directory with individual NPM dependency installations.
+For each microservice you'll need only `${NODE_APP_SERVICE}` and `sdk` directories (originated in `./services`) placed under the same root directory with individual NPM dependency installations.
 Another option is to deploy whole root repo but run only individual service on it.
 Microservices may use different MongoDB instances, but must use only one and the same RabbitMQ instance, accessible from every microservice.

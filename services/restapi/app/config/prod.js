@@ -2,8 +2,8 @@ const cfg = process.env;
 
 if (!cfg.MQ_PREFIX) cfg.MQ_PREFIX = `${cfg.NODE_APP_PRODUCT}_`;
 if (!cfg.RESTAPI_DB_PREFIX) cfg.RESTAPI_DB_PREFIX = `${cfg.NODE_APP_PRODUCT}_${cfg.NODE_APP_SERVICE}_`;
-if (!cfg.RESTAPI_WEB_BASE_PREFIX) cfg.RESTAPI_WEB_BASE_PREFIX = '';
-if (!cfg.RESTAPI_WEB_PREFIX) cfg.RESTAPI_WEB_PREFIX = `${cfg.RESTAPI_WEB_BASE_PREFIX}/${cfg.NODE_APP_SERVICE}`;
+if (!cfg.WEB_BASE_PREFIX) cfg.WEB_BASE_PREFIX = '';
+if (!cfg.RESTAPI_WEB_PREFIX) cfg.RESTAPI_WEB_PREFIX = `${cfg.WEB_BASE_PREFIX}/${cfg.NODE_APP_SERVICE}`;
 
 // generic
 
