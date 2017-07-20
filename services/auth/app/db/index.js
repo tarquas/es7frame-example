@@ -21,7 +21,7 @@ Object.assign(Db.desc, {
   },
 
   defaultInit: {
-    connString: process.env.DB_URI,
-    prefix: process.env.DB_PREFIX
+    connString: process.env.AUTH_DB_URI,
+    prefix: process.env.AUTH_DB_PREFIX
   }
 });

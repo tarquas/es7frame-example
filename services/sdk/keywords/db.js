@@ -17,6 +17,6 @@ class Keywords extends AutoInit {
   }
 }
 
-Keywords.rxNameKeywors = new XRegExp('\\pL+', 'g');
+Keywords.rxNameKeywors = new XRegExp('[\\pL\\d]+', 'g');
 
 module.exports = Keywords;

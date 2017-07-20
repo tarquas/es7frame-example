@@ -5,7 +5,7 @@ const util = require('util');
 
 require('../config');
 
-const secret = process.env.TOKEN_SECRET;
+const secret = process.env.AUTH_TOKEN_SECRET;
 
 class Profiles extends AutoInit {
   async init() {

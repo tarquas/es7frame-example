@@ -1,22 +1,22 @@
-if (!process.env.NODE_ENV) process.env.NODE_ENV = 'dev-multi';
-
-const nServices = 2;
-const clusterSize = process.env.NODE_CLUSTER_SIZE || 1;
-
-process.env.NODE_CLUSTER_SIZE = clusterSize * nServices;
+process.env.NODE_ENV = 'dev-multi';
 
 const Cluster = require('es7frame/cluster');
 
 if (Cluster.isMaster) return;
 
-const workerIdZ = process.env.NODE_CLUSTER_ID - 1;
-process.env.NODE_CLUSTER_SIZE = clusterSize;
-process.env.NODE_CLUSTER_ID = (workerIdZ / nServices | 0) + 1;
+const Union = require('es7frame/union');
 
-const Async = require('es7frame/async');
+class Multi extends Union(require('es7frame/multi')) {}
 
-switch ((workerIdZ % nServices) + 1) {
-  case 1: Async.Launcher = require('./services/auth'); break;
-  case 2: Async.Launcher = require('./services/restapi'); break;
-  default: break;
-}
+module.exports = Multi;
+
+Object.assign(Multi.desc, {
+  type: 'multi',
+
+  deps: {},
+
+  members: {
+    auth: require('./services/auth'),
+    restapi: require('./services/restapi')
+  }
+});

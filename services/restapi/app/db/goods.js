@@ -59,12 +59,12 @@ class Goods extends Model {
       price,
 
       createdAt: new Date(),
-      keywords: this.db.keywords.getKeywords(name)
+      keywords: await this.db.keywords.getKeywords({name})
     });
 
     await good.save();
 
-    return {status: 'created'};
+    return {_id: good._id};
   }
 
   async modify({ // eslint-disable-line

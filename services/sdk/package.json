@@ -1,6 +1,6 @@
 {
   "name": "es7frame-example-sdk",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Example of REST API Microservices built upon es7frame. SDK module.",
   "main": "index.js",
   "scripts": {
@@ -25,7 +25,7 @@
   "author": "Taras Mykhailovych",
   "license": "MIT",
   "dependencies": {
-    "es7frame": "0.3.1",
+    "es7frame": "0.3.2",
     "xregexp": "^3.2.0"
   },
   "devDependencies": {

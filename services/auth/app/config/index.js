@@ -1,7 +1,7 @@
 const cfg = process.env;
-if (!cfg.NODE_APP_PRODUCT) cfg.NODE_APP_PRODUCT = 'es7frame_example';
-if (!cfg.NODE_APP_SERVICE) cfg.NODE_APP_SERVICE = 'auth';
-if (!cfg.NODE_APP_SERVICE_ID) cfg.NODE_APP_SERVICE_ID = 1;
+cfg.NODE_APP_PRODUCT = 'es7frame_example';
+cfg.NODE_APP_SERVICE = 'auth';
+cfg.NODE_APP_SERVICE_ID = 1;
 
 if (!process.env.NODE_ENV) process.env.NODE_ENV = 'dev';
 

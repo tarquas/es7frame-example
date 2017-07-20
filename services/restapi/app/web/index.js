@@ -21,14 +21,14 @@ Object.assign(Web.desc, {
   },
 
   defaultInit: {
-    httpBind: process.env.WEB_HTTP,
-    httpsBind: process.env.WEB_HTTPS,
+    httpBind: process.env.RESTAPI_WEB_HTTP,
+    httpsBind: process.env.RESTAPI_WEB_HTTPS,
 
     httpsOpts: {
-      key: process.env.WEB_HTTPS_KEY,
-      cert: process.env.WEB_HTTPS_CERT
+      key: process.env.RESTAPI_WEB_HTTPS_KEY,
+      cert: process.env.RESTAPI_WEB_HTTPS_CERT
     },
 
-    prefix: process.env.WEB_PREFIX
+    prefix: process.env.RESTAPI_WEB_PREFIX
   }
 });

@@ -20,7 +20,7 @@ Object.assign(Db.desc, {
   },
 
   defaultInit: {
-    connString: process.env.DB_URI,
-    prefix: process.env.DB_PREFIX
+    connString: process.env.RESTAPI_DB_URI,
+    prefix: process.env.RESTAPI_DB_PREFIX
   }
 });
