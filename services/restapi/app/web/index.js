@@ -11,7 +11,9 @@ Object.assign(Web.desc, {
 
   members: {
     auth: require('../../../sdk/auth/web'),
+    authSocket: require('../../../sdk/auth/web-socket'),
     goods: require('./goods'),
+    goodsSocket: require('./goods-socket'),
     upload: require('es7frame/web-api-upload')
   },
 

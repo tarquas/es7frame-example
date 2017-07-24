@@ -1,7 +1,7 @@
 const Rest = require('es7frame/rest');
 
 class Auth extends Rest {
-  getToken({
+  async getToken({
     headers: {
       authorization
     },
@@ -22,9 +22,9 @@ class Auth extends Rest {
   }
 
   async check(req) {
-    const token = this.getToken(req);
+    const token = await this.getToken(req);
 
-    this.mq.auth.validateToken(token);
+    await this.db.validators.validateToken(token);
     let tokenData = this.mq.auth.tokenCache.get(token);
 
     if (!tokenData) tokenData = await this.mq.rpc('auth_checkToken', {token});

@@ -133,13 +133,13 @@ class Goods extends Model {
 }
 
 Goods.info = {
-  name: String,
-  link: String,
-  price: Number,
+  name: 1,
+  link: 1,
+  price: 1,
 
-  createdAt: Date,
-  updatedAt: Date,
-  priceUpdatedAt: Date,
+  createdAt: 1,
+  updatedAt: 1,
+  priceUpdatedAt: 1
 };
 
 module.exports = Goods;

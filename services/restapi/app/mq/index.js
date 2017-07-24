@@ -10,10 +10,12 @@ Object.assign(Mq.desc, {
   type: 'mq',
 
   members: {
-    auth: require('../../../sdk/auth/mq')
+    auth: require('../../../sdk/auth/mq'),
+    discovery: require('../../../sdk/discovery/mq')
   },
 
   deps: {
+    db: require('../db')
   },
 
   defaultInit: {

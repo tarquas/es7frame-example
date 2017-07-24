@@ -10,11 +10,11 @@ class Auth extends Disp {
     this.tokenCache.on('expire', (token, desc) => {
       delete this.userCache[desc.userId].tokens[token];
     });
+
+    this.userSockets = {};
   }
 
-  async ['SUB auth_userTokensExpired']({
-    userId // String!
-  }) {
+  async expireTokenCache(userId) {
     const user = this.userCache.get(userId);
     if (!user) return;
 
@@ -27,8 +27,24 @@ class Auth extends Disp {
     this.userCache.remove(userId);
   }
 
-  validateToken(token) {
-    if (!token || !Auth.rxValidToken.test(token)) throw 'badToken';
+  async closeUserSockets(userId) {
+    const sockets = this.userSockets[userId];
+
+    if (sockets) {
+      for (const socketId in sockets) {
+        if (Object.hasOwnProperty.call(sockets, socketId)) {
+          const socket = sockets[socketId];
+          socket.conn.close();
+        }
+      }
+    }
+  }
+
+  async ['SUB auth_userTokensExpired']({
+    userId // String!
+  }) {
+    await this.expireTokenCache(userId);
+    await this.closeUserSockets(userId);
   }
 }
 
@@ -41,7 +57,5 @@ Auth.userCacheOpts = {
   maxCount: 1 ** 5,
   maxLifetime: 30 * 60 * 1000
 };
-
-Auth.rxValidToken = /^[\w-]{32}$/;
 
 module.exports = Auth;

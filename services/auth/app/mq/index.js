@@ -11,6 +11,7 @@ Object.assign(Mq.desc, {
 
   members: {
     auth: require('../../../sdk/auth/mq'),
+    discovery: require('../../../sdk/discovery/mq'),
     profiles: require('./users-profiles')
   },
 
