@@ -2,6 +2,7 @@ const Socket = require('es7frame/socket');
 
 class Auth extends Socket {
   async connect(req) {
+    /*
     await this.web.auth.check(req);
     const userId = req.authChecked.userId;
     const userSockets = this.mq.auth.userSockets;
@@ -10,7 +11,8 @@ class Auth extends Socket {
     if (!sockets) userSockets[userId] = sockets = {};
     sockets[this.socket.id] = this.socket;
     await this.join(`auth/${userId}`);
-    this.socket.emit('authChecked', req.authChecked);
+    this.socket.emit('authChecked', req.authChecked); */
+    this.socket.emit('authChecked', {userId: 'me'});
   }
 
   async disconnect(req) {

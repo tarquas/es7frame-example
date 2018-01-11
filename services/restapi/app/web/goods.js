@@ -4,6 +4,11 @@ class Goods extends Rest {
   async ['USE /goods > auth.check']() {
   }
 
+  async ['GET /ping']() {
+    this.web.goodsSocket.io.to('goods').emit('myPing', {worker: process.env.NODE_CLUSTER_ID});
+    return {};
+  }
+
   async ['GET /goods']({
     authChecked: {
       userId

@@ -108,7 +108,7 @@ class Profiles extends AutoInit {
       throw 'badToken';
     }
 
-    await this.validateTokenData(token);
+    await this.validateTokenData(tokenData);
 
     const user = await this.model.findOne({_id: tokenData.userId}, {_id: 0, rev: 1});
     if (!user) throw 'badToken';

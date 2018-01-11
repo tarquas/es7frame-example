@@ -13,7 +13,7 @@ class Goods extends Socket {
   }
 
   async ['SUB goodsSub']() {
-    await this.join('goods');
+    await this.join(['goods']);
     this.socket.emit('goodsSubed');
   }
 

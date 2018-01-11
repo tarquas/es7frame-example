@@ -20,7 +20,7 @@ Object.assign(Mq.desc, {
   },
 
   defaultInit: {
-    connString: process.env.MQ_URI,
-    prefix: process.env.MQ_PREFIX
+    // connString: process.env.MQ_URI,
+    // prefix: process.env.MQ_PREFIX
   }
 });
